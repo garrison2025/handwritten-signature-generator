@@ -20,7 +20,7 @@
     <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json">
 
-    <!-- Icons (SVG Data URI for instant high-res icon without external files) -->
+    <!-- Icons -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230f172a'/%3E%3Cpath d='M30 70 Q 40 55 60 60 T 80 40' stroke='white' stroke-width='6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
     <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230f172a'/%3E%3Cpath d='M30 70 Q 40 55 60 60 T 80 40' stroke='white' stroke-width='6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
 
@@ -41,12 +41,21 @@
     <!-- Canonical -->
     <link rel="canonical" href="https://handwrittensignaturegenerator.org/" />
 
-    <!-- Tailwind CSS with Typography Plugin for better prose -->
-    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <!-- Font Optimization: Preconnect -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- Optimized font loading with display=swap -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Alex+Brush&family=Allura&family=Caveat:wght@400..700&family=Dancing+Script:wght@400..700&family=Great+Vibes&family=Herr+Von+Muellerhoff&family=Meddon&family=Monsieur+La+Doulaise&family=Mrs+Saint+Delafield&family=Pacifico&family=Parisienne&family=Pinyon+Script&family=Sacramento&family=WindSong:wght@400;500&family=Nothing+You+Could+Do&family=Zeyada&family=Homemade+Apple&family=Just+Me+Again+Down+Here&family=La+Belle+Aurore&family=Reenie+Beanie&family=Waiting+for+the+Sunrise&family=Covered+By+Your+Grace&family=Gloria+Hallelujah&display=swap" rel="stylesheet">
+
+    <!-- Font Optimization: Critical UI Fonts (Blocking) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Font Optimization: Signature Fonts (Non-blocking / Async) -->
+    <!-- We use media="print" onload="this.media='all'" to prevent render blocking for these heavy font assets -->
+    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Allura&family=Caveat:wght@400..700&family=Dancing+Script:wght@400..700&family=Great+Vibes&family=Herr+Von+Muellerhoff&family=Meddon&family=Monsieur+La+Doulaise&family=Mrs+Saint+Delafield&family=Pacifico&family=Parisienne&family=Pinyon+Script&family=Sacramento&family=WindSong:wght@400;500&family=Nothing+You+Could+Do&family=Zeyada&family=Homemade+Apple&family=Just+Me+Again+Down+Here&family=La+Belle+Aurore&family=Reenie+Beanie&family=Waiting+for+the+Sunrise&family=Covered+By+Your+Grace&family=Gloria+Hallelujah&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    
+    <!-- Fallback for no-js users -->
+    <noscript>
+        <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Allura&family=Caveat:wght@400..700&family=Dancing+Script:wght@400..700&family=Great+Vibes&family=Herr+Von+Muellerhoff&family=Meddon&family=Monsieur+La+Doulaise&family=Mrs+Saint+Delafield&family=Pacifico&family=Parisienne&family=Pinyon+Script&family=Sacramento&family=WindSong:wght@400;500&family=Nothing+You+Could+Do&family=Zeyada&family=Homemade+Apple&family=Just+Me+Again+Down+Here&family=La+Belle+Aurore&family=Reenie+Beanie&family=Waiting+for+the+Sunrise&family=Covered+By+Your+Grace&family=Gloria+Hallelujah&display=swap" rel="stylesheet">
+    </noscript>
     
     <!-- Structured Data (JSON-LD) -->
     <script type="application/ld+json">
@@ -163,37 +172,6 @@
       }
     ]
     </script>
-
-    <style>
-      body {
-        font-family: 'Inter', sans-serif;
-      }
-      .font-serif-display {
-        font-family: 'Playfair Display', serif;
-      }
-      /* Hide scrollbar for clean UI */
-      .no-scrollbar::-webkit-scrollbar {
-        display: none;
-      }
-      .no-scrollbar {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-      }
-      
-      @keyframes slideUpFade {
-        from {
-          opacity: 0;
-          transform: translate(-50%, 20px);
-        }
-        to {
-          opacity: 1;
-          transform: translate(-50%, 0);
-        }
-      }
-      .animate-toast {
-        animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      }
-    </style>
 <script type="importmap">
 {
   "imports": {

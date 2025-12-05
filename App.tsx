@@ -1,8 +1,7 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { PenTool, Keyboard, Shield, Zap, Layers, Menu, X, Star, Feather } from 'lucide-react';
 import TypeMode from './components/TypeMode';
-import DrawMode from './components/DrawMode';
+// import DrawMode from './components/DrawMode'; // Lazy loaded below
 import ColorPicker from './components/ColorPicker';
 import Toast from './components/Toast';
 import { AboutPage, ContactPage, PrivacyPage, TermsPage } from './components/InfoPages';
@@ -10,6 +9,8 @@ import Blog from './components/Blog';
 import { TabMode, SignatureColor, ToastMessage, AppView } from './types';
 import useLocalStorage from './hooks/useLocalStorage';
 import { FONTS, BLOG_POSTS } from './constants';
+
+const DrawMode = React.lazy(() => import('./components/DrawMode'));
 
 function App() {
   // Navigation State
@@ -367,7 +368,9 @@ function App() {
                     
                     {/* Render DrawMode but keep it mounted to preserve canvas state */}
                     <div className={activeTab === 'draw' ? 'block' : 'hidden'}>
-                        <DrawMode color={color} isVisible={activeTab === 'draw'} onShowToast={showToast} />
+                        <Suspense fallback={<div className="h-[400px] flex items-center justify-center text-slate-400">Loading Drawing Pad...</div>}>
+                            <DrawMode color={color} isVisible={activeTab === 'draw'} onShowToast={showToast} />
+                        </Suspense>
                     </div>
                   </div>
                 </div>
@@ -412,7 +415,7 @@ function App() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       {[
                           { title: "1. Choose Your Mode", desc: "Select 'Type' in the handwritten signature generator for a polished font look, or 'Draw' to sketch with your finger/mouse." },
-                          { title: "2. Customize Style", desc: "Adjust slant, letter spacing, stroke width, and color within the generator to match your unique brand identity." },
+                          { title: "2. Customize Style", desc: "Adjust settings like slant, letter spacing, stroke width, and color within the generator to match your unique brand identity." },
                           { title: "3. Download & Use", desc: "Save your creation as a high-res PNG or SVG. Use the 'White Ink' mode for dark backgrounds." }
                       ].map((step, i) => (
                           <div key={i} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
