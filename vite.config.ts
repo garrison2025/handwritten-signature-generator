@@ -6,11 +6,19 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 export default defineConfig({
   plugins: [
     react(),
-    // Ensures manifest.json in the root is copied to the dist folder during build
+    // Ensures manifest.json and SEO files in the root are copied to the dist folder during build
     viteStaticCopy({
       targets: [
         {
           src: 'manifest.json',
+          dest: '.'
+        },
+        {
+          src: 'robots.txt',
+          dest: '.'
+        },
+        {
+          src: 'sitemap.xml',
           dest: '.'
         }
       ]

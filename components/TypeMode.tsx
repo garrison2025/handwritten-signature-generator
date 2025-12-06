@@ -1,10 +1,13 @@
 
+
+
 import React, { useState, useEffect } from 'react';
 import { Download, Copy, RefreshCw, X, SlidersHorizontal, MoreHorizontal, FileCode, Minus } from 'lucide-react';
 import { FONTS, PRESET_TEXTS } from '../constants';
 import { SignatureColor, FontOption, TypeStyle, SignatureLineOptions } from '../types';
 import { trimCanvas } from '../utils';
 import useLocalStorage from '../hooks/useLocalStorage';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface TypeModeProps {
   text: string;
@@ -14,6 +17,8 @@ interface TypeModeProps {
 }
 
 const TypeMode: React.FC<TypeModeProps> = ({ text, setText, color, onShowToast }) => {
+  const { t } = useTranslation();
+  
   // Persist style and line options
   const [style, setStyle] = useLocalStorage<TypeStyle>('sc_type_style', { slant: 0, spacing: 0, subtitle: '' });
   const [lineOptions, setLineOptions] = useLocalStorage<SignatureLineOptions>('sc_line_options', { enabled: false, style: 'solid', showX: true });
@@ -259,7 +264,7 @@ const TypeMode: React.FC<TypeModeProps> = ({ text, setText, color, onShowToast }
     link.click();
     document.body.removeChild(link);
     setActiveDropdown(null);
-    onShowToast("Signature downloaded successfully", "success");
+    onShowToast(t('toast_sig_downloaded'), "success");
   };
 
   const handleDownloadSVG = (font: FontOption) => {
@@ -343,7 +348,7 @@ const TypeMode: React.FC<TypeModeProps> = ({ text, setText, color, onShowToast }
     link.click();
     document.body.removeChild(link);
     setActiveDropdown(null);
-    onShowToast("Vector SVG downloaded", "success");
+    onShowToast(t('toast_svg_downloaded'), "success");
   };
 
   const handleCopy = async (font: FontOption) => {
@@ -367,11 +372,11 @@ const TypeMode: React.FC<TypeModeProps> = ({ text, setText, color, onShowToast }
             [blob.type]: blob,
           }),
         ]);
-        onShowToast("Copied to clipboard", "success");
+        onShowToast(t('toast_copied'), "success");
       }, 'image/png');
     } catch (err) {
       console.error('Failed to copy image: ', err);
-      onShowToast("Failed to copy", "info");
+      onShowToast(t('toast_copy_failed'), "info");
     }
   };
 
@@ -393,7 +398,7 @@ const TypeMode: React.FC<TypeModeProps> = ({ text, setText, color, onShowToast }
               type="text"
               value={text}
               onChange={(e) => setText(e.target.value)}
-              placeholder="Type your name..."
+              placeholder={t('placeholder_text')}
               maxLength={40}
               aria-label="Name Input"
               className="w-full text-center text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif-display py-6 bg-transparent border-b-2 border-gray-200 focus:border-slate-900 outline-none placeholder:text-gray-200 transition-colors text-slate-900 pr-12"
@@ -404,7 +409,7 @@ const TypeMode: React.FC<TypeModeProps> = ({ text, setText, color, onShowToast }
                     <button
                         onClick={() => setText('')}
                         className="p-2 text-gray-300 hover:text-red-500 transition-colors"
-                        title="Clear"
+                        title={t('btn_clear')}
                         aria-label="Clear Name"
                     >
                         <X size={20} />
@@ -426,7 +431,7 @@ const TypeMode: React.FC<TypeModeProps> = ({ text, setText, color, onShowToast }
                     type="text"
                     value={currentStyle.subtitle || ''}
                     onChange={(e) => setStyle({...currentStyle, subtitle: e.target.value})}
-                    placeholder="Add subtitle (e.g. Chief Executive Officer)"
+                    placeholder={t('placeholder_subtitle')}
                     aria-label="Subtitle Input"
                     className="w-full text-center text-lg font-medium tracking-wide text-slate-500 bg-transparent border-b border-dashed border-gray-200 focus:border-slate-400 outline-none placeholder:text-gray-300 pb-2"
                 />
@@ -439,7 +444,7 @@ const TypeMode: React.FC<TypeModeProps> = ({ text, setText, color, onShowToast }
             className={`flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-full transition-all duration-300 ${showControls ? 'bg-slate-100 text-slate-900' : 'text-slate-400 hover:text-slate-600'}`}
           >
             <SlidersHorizontal size={14} />
-            <span>Customize Style</span>
+            <span>{t('label_customize')}</span>
           </button>
 
           {/* Advanced Controls */}
@@ -447,7 +452,7 @@ const TypeMode: React.FC<TypeModeProps> = ({ text, setText, color, onShowToast }
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 bg-gray-50/50 p-6 rounded-2xl w-full max-w-2xl border border-gray-100 animate-in slide-in-from-top-2 fade-in duration-300">
                 <div className="space-y-3">
                     <div className="flex justify-between text-xs uppercase tracking-wider font-semibold text-gray-400">
-                        <label htmlFor="slant-control">Slant</label>
+                        <label htmlFor="slant-control">{t('label_slant')}</label>
                         <span>{currentStyle.slant}°</span>
                     </div>
                     <input 
@@ -462,7 +467,7 @@ const TypeMode: React.FC<TypeModeProps> = ({ text, setText, color, onShowToast }
                 </div>
                 <div className="space-y-3">
                     <div className="flex justify-between text-xs uppercase tracking-wider font-semibold text-gray-400">
-                        <label htmlFor="spacing-control">Spacing</label>
+                        <label htmlFor="spacing-control">{t('label_spacing')}</label>
                         <span>{currentStyle.spacing}px</span>
                     </div>
                     <input 
@@ -478,13 +483,13 @@ const TypeMode: React.FC<TypeModeProps> = ({ text, setText, color, onShowToast }
                 
                 {/* Signature Line Controls */}
                 <div className="md:col-span-2 pt-4 border-t border-gray-200/50 flex flex-col sm:flex-row items-center justify-between gap-4">
-                     <span className="text-xs uppercase tracking-wider font-semibold text-gray-400 self-start sm:self-center">Signature Line</span>
+                     <span className="text-xs uppercase tracking-wider font-semibold text-gray-400 self-start sm:self-center">{t('label_sig_line')}</span>
                      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                          <button
                              onClick={() => setLineOptions(prev => ({ ...prev, enabled: !prev.enabled }))}
                              className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${lineOptions.enabled ? 'bg-slate-900 text-white' : 'bg-gray-100 text-slate-500 hover:bg-gray-200'}`}
                          >
-                            {lineOptions.enabled ? 'On' : 'Off'}
+                            {lineOptions.enabled ? t('control_on') : t('control_off')}
                          </button>
                          
                          {lineOptions.enabled && (
@@ -493,13 +498,13 @@ const TypeMode: React.FC<TypeModeProps> = ({ text, setText, color, onShowToast }
                                     onClick={() => setLineOptions(prev => ({ ...prev, style: prev.style === 'solid' ? 'dashed' : 'solid' }))}
                                     className="px-3 py-1.5 text-xs font-medium bg-white border border-gray-200 rounded-md text-slate-600 hover:bg-gray-50 transition-colors"
                                 >
-                                    {lineOptions.style === 'solid' ? 'Solid' : 'Dashed'}
+                                    {lineOptions.style === 'solid' ? t('control_solid') : t('control_dashed')}
                                 </button>
                                 <button
                                     onClick={() => setLineOptions(prev => ({ ...prev, showX: !prev.showX }))}
                                     className={`px-3 py-1.5 text-xs font-medium border rounded-md transition-colors ${lineOptions.showX ? 'bg-slate-100 border-slate-300 text-slate-900' : 'bg-white border-gray-200 text-slate-500'}`}
                                 >
-                                    "X" Mark
+                                    {t('control_x_mark')}
                                 </button>
                             </>
                          )}
@@ -573,7 +578,7 @@ const TypeMode: React.FC<TypeModeProps> = ({ text, setText, color, onShowToast }
                         aria-label="Copy to Clipboard"
                     >
                         <Copy size={16} />
-                        <span>Copy</span>
+                        <span>{t('btn_copy')}</span>
                     </button>
                     
                     {/* Primary Download (Color PNG) */}
@@ -583,7 +588,7 @@ const TypeMode: React.FC<TypeModeProps> = ({ text, setText, color, onShowToast }
                         aria-label="Download PNG"
                     >
                         <Download size={16} />
-                        <span>PNG</span>
+                        <span>{t('btn_download_png')}</span>
                     </button>
 
                     {/* More Options Dropdown */}
@@ -603,21 +608,21 @@ const TypeMode: React.FC<TypeModeProps> = ({ text, setText, color, onShowToast }
                                     className="w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-gray-50 flex items-center gap-2"
                                 >
                                     <FileCode size={14} className="text-slate-400" />
-                                    SVG (Vector)
+                                    {t('btn_download_svg')}
                                 </button>
                                 <button
                                     onClick={() => handleDownload(font, { withBg: true })}
                                     className="w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-gray-50 flex items-center gap-2"
                                 >
                                     <span className="w-3 h-3 rounded-full border border-gray-200 bg-white"></span>
-                                    White Background
+                                    {t('btn_white_bg')}
                                 </button>
                                 <button
                                     onClick={() => handleDownload(font, { whiteInk: true })}
                                     className="w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-gray-50 flex items-center gap-2 border-t border-gray-50"
                                 >
                                     <span className="w-3 h-3 rounded-full border border-gray-300 bg-slate-900"></span>
-                                    White Ink (Dark Mode)
+                                    {t('btn_white_ink')}
                                 </button>
                             </div>
                         )}

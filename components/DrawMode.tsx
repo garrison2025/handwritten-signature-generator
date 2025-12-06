@@ -1,9 +1,12 @@
 
+
+
 import React, { useRef, useState, useEffect } from 'react';
 import { Download, Trash2, Undo2, Redo2, PenTool, Edit3, FileCode, Play, Pause, Grid3X3, AlignJustify, Square, Copy } from 'lucide-react';
 import { SignatureColor, PenStyle, Point, BackgroundPattern } from '../types';
 import { trimCanvas } from '../utils';
 import useLocalStorage from '../hooks/useLocalStorage';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface DrawModeProps {
   color: SignatureColor;
@@ -19,6 +22,7 @@ interface Stroke {
 }
 
 const DrawMode: React.FC<DrawModeProps> = ({ color, isVisible, onShowToast }) => {
+  const { t } = useTranslation();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   
@@ -432,7 +436,7 @@ const DrawMode: React.FC<DrawModeProps> = ({ color, isVisible, onShowToast }) =>
       link.click();
       document.body.removeChild(link);
       setShowSaveOptions(false);
-      onShowToast("Vector SVG downloaded", "success");
+      onShowToast(t('toast_svg_downloaded'), "success");
   };
 
   const downloadPNG = (options: { withBg?: boolean, whiteInk?: boolean }) => {
@@ -469,7 +473,7 @@ const DrawMode: React.FC<DrawModeProps> = ({ color, isVisible, onShowToast }) =>
     link.click();
     document.body.removeChild(link);
     setShowSaveOptions(false);
-    onShowToast("Signature downloaded successfully", "success");
+    onShowToast(t('toast_sig_downloaded'), "success");
   };
 
   const handleCopy = () => {
@@ -485,11 +489,11 @@ const DrawMode: React.FC<DrawModeProps> = ({ color, isVisible, onShowToast }) =>
                     [blob.type]: blob,
                 }),
             ]);
-            onShowToast("Copied to clipboard", "success");
+            onShowToast(t('toast_copied'), "success");
         }, 'image/png');
     } catch (err) {
         console.error('Failed to copy image: ', err);
-        onShowToast("Failed to copy", "info");
+        onShowToast(t('toast_copy_failed'), "info");
     }
   };
 
@@ -520,7 +524,7 @@ const DrawMode: React.FC<DrawModeProps> = ({ color, isVisible, onShowToast }) =>
 
         {!hasContent && !isDrawing && (
              <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
-                 <p className="text-2xl sm:text-3xl font-handwriting text-gray-200 font-serif-display italic">Sign within the space</p>
+                 <p className="text-2xl sm:text-3xl font-handwriting text-gray-200 font-serif-display italic">{t('draw_sign_space')}</p>
              </div>
         )}
         <canvas
@@ -538,22 +542,22 @@ const DrawMode: React.FC<DrawModeProps> = ({ color, isVisible, onShowToast }) =>
 
       <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 flex flex-wrap items-center justify-center gap-1 sm:gap-2 p-1.5 bg-white/95 backdrop-blur-md rounded-2xl border border-gray-200 shadow-xl z-20 max-w-[95vw] sm:max-w-none">
           <div className="flex bg-gray-100 rounded-xl p-0.5 mx-0.5 sm:mx-1">
-             <button onClick={() => setPenStyle('fountain')} className={`p-2 rounded-lg transition-all ${penStyle === 'fountain' ? 'bg-white shadow-sm text-slate-900' : 'text-gray-400 hover:text-gray-600'}`} aria-label="Fountain Pen Style" title="Fountain Pen"><PenTool size={16} /></button>
-             <button onClick={() => setPenStyle('monoline')} className={`p-2 rounded-lg transition-all ${penStyle === 'monoline' ? 'bg-white shadow-sm text-slate-900' : 'text-gray-400 hover:text-gray-600'}`} aria-label="Monoline Pen Style" title="Monoline Pen"><Edit3 size={16} /></button>
+             <button onClick={() => setPenStyle('fountain')} className={`p-2 rounded-lg transition-all ${penStyle === 'fountain' ? 'bg-white shadow-sm text-slate-900' : 'text-gray-400 hover:text-gray-600'}`} aria-label={t('label_pen_style')} title="Fountain Pen"><PenTool size={16} /></button>
+             <button onClick={() => setPenStyle('monoline')} className={`p-2 rounded-lg transition-all ${penStyle === 'monoline' ? 'bg-white shadow-sm text-slate-900' : 'text-gray-400 hover:text-gray-600'}`} aria-label={t('label_pen_style')} title="Monoline Pen"><Edit3 size={16} /></button>
           </div>
           
           <div className="w-px h-6 bg-gray-200 mx-1 hidden sm:block"></div>
           
           <div className="flex bg-gray-100 rounded-xl p-0.5 mx-0.5 sm:mx-1 hidden xs:flex">
-             <button onClick={() => setBgPattern('grid')} className={`p-2 rounded-lg transition-all ${bgPattern === 'grid' ? 'bg-white shadow-sm text-slate-900' : 'text-gray-400 hover:text-gray-600'}`} aria-label="Grid Background" title="Grid"><Grid3X3 size={16} /></button>
-             <button onClick={() => setBgPattern('lines')} className={`p-2 rounded-lg transition-all ${bgPattern === 'lines' ? 'bg-white shadow-sm text-slate-900' : 'text-gray-400 hover:text-gray-600'}`} aria-label="Lined Background" title="Lines"><AlignJustify size={16} /></button>
-             <button onClick={() => setBgPattern('blank')} className={`p-2 rounded-lg transition-all ${bgPattern === 'blank' ? 'bg-white shadow-sm text-slate-900' : 'text-gray-400 hover:text-gray-600'}`} aria-label="Blank Background" title="Blank"><Square size={16} /></button>
+             <button onClick={() => setBgPattern('grid')} className={`p-2 rounded-lg transition-all ${bgPattern === 'grid' ? 'bg-white shadow-sm text-slate-900' : 'text-gray-400 hover:text-gray-600'}`} aria-label={t('label_bg')} title="Grid"><Grid3X3 size={16} /></button>
+             <button onClick={() => setBgPattern('lines')} className={`p-2 rounded-lg transition-all ${bgPattern === 'lines' ? 'bg-white shadow-sm text-slate-900' : 'text-gray-400 hover:text-gray-600'}`} aria-label={t('label_bg')} title="Lines"><AlignJustify size={16} /></button>
+             <button onClick={() => setBgPattern('blank')} className={`p-2 rounded-lg transition-all ${bgPattern === 'blank' ? 'bg-white shadow-sm text-slate-900' : 'text-gray-400 hover:text-gray-600'}`} aria-label={t('label_bg')} title="Blank"><Square size={16} /></button>
           </div>
 
           <div className="w-px h-6 bg-gray-200 mx-1 hidden sm:block"></div>
           
           <div className="flex items-center px-2 gap-2 hidden sm:flex">
-            <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">Size</span>
+            <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">{t('label_pen_size')}</span>
             <input aria-label="Pen Size" type="range" min="1" max="8" step="0.5" value={baseWidth} onChange={(e) => setBaseWidth(parseFloat(e.target.value))} className="w-20 h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-slate-900" />
           </div>
           <div className="w-px h-6 bg-gray-200 mx-1 hidden sm:block"></div>
@@ -563,29 +567,29 @@ const DrawMode: React.FC<DrawModeProps> = ({ color, isVisible, onShowToast }) =>
            </button>
            
           <div className="flex items-center gap-0.5 sm:gap-1">
-            <button onClick={undo} disabled={!canUndo || isPlaying} className={`p-2.5 rounded-full transition-colors ${!canUndo || isPlaying ? 'text-gray-300' : 'text-slate-600 hover:bg-gray-100'}`} aria-label="Undo" title="Undo"><Undo2 size={18} /></button>
-            <button onClick={redo} disabled={!canRedo || isPlaying} className={`p-2.5 rounded-full transition-colors ${!canRedo || isPlaying ? 'text-gray-300' : 'text-slate-600 hover:bg-gray-100'}`} aria-label="Redo" title="Redo"><Redo2 size={18} /></button>
-            <button onClick={clearCanvas} disabled={isPlaying} className="p-2.5 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors" aria-label="Clear Canvas" title="Clear"><Trash2 size={18} /></button>
+            <button onClick={undo} disabled={!canUndo || isPlaying} className={`p-2.5 rounded-full transition-colors ${!canUndo || isPlaying ? 'text-gray-300' : 'text-slate-600 hover:bg-gray-100'}`} aria-label={t('btn_undo')} title={t('btn_undo')}><Undo2 size={18} /></button>
+            <button onClick={redo} disabled={!canRedo || isPlaying} className={`p-2.5 rounded-full transition-colors ${!canRedo || isPlaying ? 'text-gray-300' : 'text-slate-600 hover:bg-gray-100'}`} aria-label={t('btn_redo')} title={t('btn_redo')}><Redo2 size={18} /></button>
+            <button onClick={clearCanvas} disabled={isPlaying} className="p-2.5 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors" aria-label={t('btn_clear')} title={t('btn_clear')}><Trash2 size={18} /></button>
           </div>
           
           <div className="w-px h-6 bg-gray-200 mx-1 hidden sm:block"></div>
           
           <div className="flex items-center gap-1 sm:gap-2 ml-0.5 sm:ml-1">
-              <button onClick={handleCopy} disabled={!hasContent || isPlaying} className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-colors ${hasContent && !isPlaying ? 'text-slate-700 bg-gray-100 hover:bg-gray-200' : 'text-gray-300 bg-gray-50'}`} aria-label="Copy Image" title="Copy to Clipboard">
+              <button onClick={handleCopy} disabled={!hasContent || isPlaying} className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-colors ${hasContent && !isPlaying ? 'text-slate-700 bg-gray-100 hover:bg-gray-200' : 'text-gray-300 bg-gray-50'}`} aria-label="Copy Image" title={t('btn_copy')}>
                  <Copy size={16} />
-                 <span className="hidden sm:inline">Copy</span>
+                 <span className="hidden sm:inline">{t('btn_copy')}</span>
               </button>
 
               <div className="relative">
                   <button onClick={() => hasContent && setShowSaveOptions(!showSaveOptions)} disabled={!hasContent || isPlaying} className={`flex items-center space-x-2 px-4 py-2 rounded-xl font-medium text-sm transition-all ${hasContent && !isPlaying ? 'bg-slate-900 text-white shadow-md hover:bg-slate-800' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`} aria-label="Open Download Options">
-                    <Download size={16} /><span className="hidden sm:inline">Save</span>
+                    <Download size={16} /><span className="hidden sm:inline">{t('btn_save')}</span>
                   </button>
                   {showSaveOptions && hasContent && (
                       <div className="absolute bottom-full right-0 mb-3 w-52 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden animate-in slide-in-from-bottom-2 fade-in duration-200">
-                          <button onClick={downloadSVG} className="w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-gray-50 flex items-center gap-2"><FileCode size={14} className="text-slate-400" /> SVG (Vector)</button>
-                          <button onClick={() => downloadPNG({ withBg: false })} className="w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-gray-50 flex items-center gap-2"><span className="w-3 h-3 rounded border border-gray-300 bg-gray-100"></span> PNG Transparent</button>
-                          <button onClick={() => downloadPNG({ withBg: true })} className="w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-gray-50 flex items-center gap-2"><span className="w-3 h-3 rounded border border-gray-300 bg-white"></span> PNG White BG</button>
-                          <button onClick={() => downloadPNG({ whiteInk: true })} className="w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-gray-50 flex items-center gap-2 border-t border-gray-50"><span className="w-3 h-3 rounded border border-gray-300 bg-slate-900"></span> White Ink (Dark)</button>
+                          <button onClick={downloadSVG} className="w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-gray-50 flex items-center gap-2"><FileCode size={14} className="text-slate-400" /> {t('btn_download_svg')}</button>
+                          <button onClick={() => downloadPNG({ withBg: false })} className="w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-gray-50 flex items-center gap-2"><span className="w-3 h-3 rounded border border-gray-300 bg-gray-100"></span> {t('btn_download_png')}</button>
+                          <button onClick={() => downloadPNG({ withBg: true })} className="w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-gray-50 flex items-center gap-2"><span className="w-3 h-3 rounded border border-gray-300 bg-white"></span> {t('btn_white_bg')}</button>
+                          <button onClick={() => downloadPNG({ whiteInk: true })} className="w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-gray-50 flex items-center gap-2 border-t border-gray-50"><span className="w-3 h-3 rounded border border-gray-300 bg-slate-900"></span> {t('btn_white_ink')}</button>
                       </div>
                   )}
               </div>

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, Suspense } from 'react';
 import { PenTool, Keyboard, Shield, Zap, Layers, Menu, X, Star, Feather } from 'lucide-react';
 import TypeMode from './components/TypeMode';
@@ -9,10 +10,14 @@ import Blog from './components/Blog';
 import { TabMode, SignatureColor, ToastMessage, AppView } from './types';
 import useLocalStorage from './hooks/useLocalStorage';
 import { FONTS, BLOG_POSTS } from './constants';
+import { useTranslation } from './hooks/useTranslation';
 
 const DrawMode = React.lazy(() => import('./components/DrawMode'));
 
 function App() {
+  // Localization
+  const { t } = useTranslation();
+
   // Navigation State
   const [currentView, setCurrentView] = useState<AppView>('home');
   const [activeBlogSlug, setActiveBlogSlug] = useState<string | null>(null);
@@ -75,11 +80,12 @@ function App() {
 
   // Dynamic SEO & Title Management Engine
   useEffect(() => {
-    const baseTitle = "SignCraft - Free Handwritten Signature Generator";
+    // Localization of Title (Simple Append)
+    const baseTitle = t('app_title');
     const baseUrl = "https://handwrittensignaturegenerator.org";
     
     let title = baseTitle;
-    let description = "Create professional, realistic handwritten signatures online. Type to generate or draw your own. Secure, private, and beautifully crafted.";
+    let description = t('app_description');
     let path = "/";
     let articleData = null;
     let ogImage = "https://ui-avatars.com/api/?name=Sign+Craft&background=0f172a&color=fff&size=512";
@@ -87,37 +93,30 @@ function App() {
     switch (currentView) {
         case 'home':
             if (activeTab === 'draw') {
-                title = "Draw Signature Online - Realistic Handwriting Pad | SignCraft";
-                description = "Free online signature drawing pad. Create realistic handwritten signatures with pressure sensitivity. Export as vector SVG or transparent PNG.";
+                title = `Draw Signature Online - Realistic Handwriting Pad | SignCraft`;
             } else {
-                title = "Type Your Signature Online - Free Generator | SignCraft";
-                description = "Generate professional signatures by typing. Choose from 20+ handwritten fonts. Customize slant, color, and style. No AI, 100% Client-side.";
+                title = `Type Your Signature Online - Free Generator | SignCraft`;
             }
             path = "/";
             break;
         case 'about':
             title = "About Us - SignCraft Mission & Privacy";
-            description = "Learn about SignCraft's mission to protect digital identity with secure, client-side signature generation technology.";
             path = "/about";
             break;
         case 'contact':
             title = "Contact Us - SignCraft Support";
-            description = "Get in touch with the SignCraft team for feature requests, bug reports, or partnership inquiries.";
             path = "/contact";
             break;
         case 'privacy':
             title = "Privacy Policy - SignCraft";
-            description = "We value your privacy. SignCraft operates entirely in your browser. No signature data is ever sent to a server.";
             path = "/privacy";
             break;
         case 'terms':
             title = "Terms & Conditions - SignCraft";
-            description = "Read our Terms and Conditions regarding the usage of generated signatures and intellectual property.";
             path = "/terms";
             break;
         case 'blog':
             title = "SignCraft Blog - Digital Identity & Productivity Tips";
-            description = "Explore articles on electronic signatures, graphology, and design tips for the modern professional.";
             path = "/blog";
             break;
         case 'blog-post':
@@ -216,7 +215,7 @@ function App() {
         console.warn('Error injecting schema', e);
     }
 
-  }, [currentView, activeTab, activeBlogSlug]);
+  }, [currentView, activeTab, activeBlogSlug, t]);
 
   const handleNavigate = (view: AppView, slug?: string) => {
       // If we are already on this view/slug, do nothing
@@ -272,10 +271,10 @@ function App() {
           
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center space-x-8">
-            <NavLink view="home" label="Generator" />
-            <NavLink view="blog" label="Blog" />
-            <NavLink view="about" label="About" />
-            <NavLink view="contact" label="Contact" />
+            <NavLink view="home" label={t('nav_home')} />
+            <NavLink view="blog" label={t('nav_blog')} />
+            <NavLink view="about" label={t('nav_about')} />
+            <NavLink view="contact" label={t('nav_contact')} />
           </nav>
 
           {/* Mobile Menu Toggle */}
@@ -290,12 +289,12 @@ function App() {
 
         {/* Mobile Nav Dropdown */}
         {isMobileMenuOpen && (
-            <div className="md:hidden absolute top-16 left-0 w-full bg-white border-b border-gray-100 shadow-lg animate-in slide-in-from-top-5 duration-200">
-                <div className="flex flex-col p-4 space-y-4">
-                    <button onClick={() => handleNavigate('home')} className="text-left font-medium text-slate-700 py-2">Generator</button>
-                    <button onClick={() => handleNavigate('blog')} className="text-left font-medium text-slate-700 py-2">Blog</button>
-                    <button onClick={() => handleNavigate('about')} className="text-left font-medium text-slate-700 py-2">About Us</button>
-                    <button onClick={() => handleNavigate('contact')} className="text-left font-medium text-slate-700 py-2">Contact</button>
+            <div className="md:hidden absolute top-16 left-0 w-full bg-white border-b border-gray-100 shadow-lg animate-in slide-in-from-top-5 duration-200 overflow-y-auto max-h-[80vh]">
+                <div className="flex flex-col p-4 space-y-2">
+                    <button onClick={() => handleNavigate('home')} className="text-left font-medium text-slate-700 py-2 border-b border-gray-50">{t('nav_home')}</button>
+                    <button onClick={() => handleNavigate('blog')} className="text-left font-medium text-slate-700 py-2 border-b border-gray-50">{t('nav_blog')}</button>
+                    <button onClick={() => handleNavigate('about')} className="text-left font-medium text-slate-700 py-2 border-b border-gray-50">{t('nav_about')}</button>
+                    <button onClick={() => handleNavigate('contact')} className="text-left font-medium text-slate-700 py-2 border-b border-gray-50">{t('nav_contact')}</button>
                 </div>
             </div>
         )}
@@ -308,15 +307,14 @@ function App() {
               <div className="text-center mb-10 sm:mb-16 space-y-4 sm:space-y-6 animate-in slide-in-from-bottom-4 duration-700">
                 <div className="inline-flex items-center gap-1 bg-yellow-50 border border-yellow-100 px-3 py-1 rounded-full mb-2">
                     <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                    <span className="text-xs font-bold text-yellow-700">Excellent 4.9/5 Average Rating</span>
+                    <span className="text-xs font-bold text-yellow-700">{t('rating_label')}</span>
                 </div>
 
                 <h1 className="text-3xl sm:text-4xl md:text-6xl font-serif-display font-medium text-slate-900 leading-tight">
-                  The Art of the <span className="italic text-slate-600">Signature</span>
+                  {t('hero_title')}
                 </h1>
                 <p className="text-base sm:text-lg text-slate-500 max-w-2xl mx-auto leading-relaxed px-4">
-                  Experience the most realistic <strong>handwritten signature generator</strong> online. Create a professional, secure digital mark in seconds. 
-                  <span className="hidden sm:inline"> Free, purely client-side, and designed for professionals.</span>
+                  {t('hero_subtitle')}
                 </p>
               </div>
 
@@ -332,7 +330,7 @@ function App() {
                     }`}
                   >
                     <Keyboard size={18} />
-                    <span>Type</span>
+                    <span>{t('tab_type')}</span>
                     {activeTab === 'type' && (
                       <span className="absolute bottom-0 left-0 w-full h-0.5 bg-slate-900" />
                     )}
@@ -344,7 +342,7 @@ function App() {
                     }`}
                   >
                     <PenTool size={18} />
-                    <span>Draw</span>
+                    <span>{t('tab_draw')}</span>
                     {activeTab === 'draw' && (
                       <span className="absolute bottom-0 left-0 w-full h-0.5 bg-slate-900" />
                     )}
@@ -357,6 +355,7 @@ function App() {
                   {/* Color Picker (Global) */}
                   <div className="mb-8">
                     <ColorPicker selectedColor={color} onColorChange={setColor} />
+                    <p className="text-center text-xs text-slate-300 mt-2">{t('label_color')}</p>
                   </div>
 
                   {/* Modes */}
@@ -379,31 +378,31 @@ function App() {
               {/* SEO Content Section - Magazine Layout */}
               <div className="mt-20 sm:mt-24 grid grid-cols-1 md:grid-cols-12 gap-12 max-w-5xl mx-auto px-2">
                   <div className="md:col-span-4">
-                      <h2 className="text-2xl font-serif-display font-medium mb-6">Why Use a <strong>Handwritten Signature Generator</strong>?</h2>
+                      <h2 className="text-2xl font-serif-display font-medium mb-6">{t('seo_why_title')}</h2>
                       <p className="text-slate-500 leading-relaxed text-sm">
-                          In the digital age, a professional online signature is essential for branding. SignCraft offers a free, secure, and artistically refined <strong>handwritten signature generator</strong> solution for contracts, emails, and digital art.
+                          {t('seo_why_desc')}
                       </p>
                   </div>
                   <div className="md:col-span-8 flex flex-col justify-center space-y-6">
                       <div className="flex items-start gap-4">
                           <div className="bg-white p-3 rounded-xl shadow-sm border border-gray-100 text-slate-900"><Shield size={20} /></div>
                           <div>
-                              <h3 className="font-semibold text-slate-900 text-sm mb-1">Secure & Private</h3>
-                              <p className="text-slate-500 text-xs leading-relaxed">Our unique <strong>handwritten signature generator</strong> operates entirely in your browser (Client-Side), ensuring zero data leaks.</p>
+                              <h3 className="font-semibold text-slate-900 text-sm mb-1">{t('feature_privacy')}</h3>
+                              <p className="text-slate-500 text-xs leading-relaxed">{t('feature_privacy_desc')}</p>
                           </div>
                       </div>
                       <div className="flex items-start gap-4">
                           <div className="bg-white p-3 rounded-xl shadow-sm border border-gray-100 text-slate-900"><Zap size={20} /></div>
                           <div>
-                              <h3 className="font-semibold text-slate-900 text-sm mb-1">Instant Vector Export</h3>
-                              <p className="text-slate-500 text-xs leading-relaxed">Download Scalable Vector Graphics (SVG) directly from the <strong>handwritten signature generator</strong> for professional printing.</p>
+                              <h3 className="font-semibold text-slate-900 text-sm mb-1">{t('feature_vector')}</h3>
+                              <p className="text-slate-500 text-xs leading-relaxed">{t('feature_vector_desc')}</p>
                           </div>
                       </div>
                       <div className="flex items-start gap-4">
                           <div className="bg-white p-3 rounded-xl shadow-sm border border-gray-100 text-slate-900"><Layers size={20} /></div>
                           <div>
-                              <h3 className="font-semibold text-slate-900 text-sm mb-1">Natural Ink Technology</h3>
-                              <p className="text-slate-500 text-xs leading-relaxed">Unlike basic tools, this <strong>handwritten signature generator</strong> simulates real ink velocity and pressure for an authentic feel.</p>
+                              <h3 className="font-semibold text-slate-900 text-sm mb-1">{t('feature_ink')}</h3>
+                              <p className="text-slate-500 text-xs leading-relaxed">{t('feature_ink_desc')}</p>
                           </div>
                       </div>
                   </div>
@@ -411,12 +410,12 @@ function App() {
               
               {/* How to Steps - Cards */}
               <div className="mt-20 border-t border-gray-200 pt-16">
-                  <h2 className="text-center text-2xl font-serif-display font-medium mb-12">How to Use the <strong>Handwritten Signature Generator</strong></h2>
+                  <h2 className="text-center text-2xl font-serif-display font-medium mb-12">{t('how_to_title')}</h2>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       {[
-                          { title: "1. Choose Your Mode", desc: "Select 'Type' in the handwritten signature generator for a polished font look, or 'Draw' to sketch with your finger/mouse." },
-                          { title: "2. Customize Style", desc: "Adjust settings like slant, letter spacing, stroke width, and color within the generator to match your unique brand identity." },
-                          { title: "3. Download & Use", desc: "Save your creation as a high-res PNG or SVG. Use the 'White Ink' mode for dark backgrounds." }
+                          { title: t('step_1_title'), desc: t('step_1_desc') },
+                          { title: t('step_2_title'), desc: t('step_2_desc') },
+                          { title: t('step_3_title'), desc: t('step_3_desc') }
                       ].map((step, i) => (
                           <div key={i} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
                               <span className="text-4xl font-serif-display text-gray-100 font-bold mb-4 block">0{i+1}</span>
@@ -429,7 +428,7 @@ function App() {
 
                {/* SEO Footer - Keyword Injection for Fonts */}
                <div className="mt-20 border-t border-gray-200 pt-10 pb-4 text-center">
-                  <p className="text-xs text-gray-400 font-medium uppercase tracking-widest mb-4">Supported Signature Styles</p>
+                  <p className="text-xs text-gray-400 font-medium uppercase tracking-widest mb-4">{t('supported_styles_title')}</p>
                   <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 max-w-3xl mx-auto">
                       {FONTS.map(f => (
                           <span key={f.name} className="text-[10px] text-gray-400 font-light hover:text-gray-600 transition-colors cursor-default">
@@ -466,47 +465,47 @@ function App() {
                         <span className="text-lg font-serif-display font-semibold tracking-tight text-slate-900">SignCraft</span>
                     </div>
                     <p className="text-sm text-slate-500 leading-relaxed">
-                        The professional standard for digital identity. The ultimate <strong>handwritten signature generator</strong> for the modern world.
+                        {t('footer_tagline')}
                     </p>
                 </div>
 
                 {/* Product Links */}
                 <div>
-                    <h4 className="font-serif-display font-medium text-slate-900 mb-6">Product</h4>
+                    <h4 className="font-serif-display font-medium text-slate-900 mb-6">{t('footer_product')}</h4>
                     <ul className="space-y-3">
-                        <li><button onClick={() => handleNavigate('home')} className="text-sm text-slate-500 hover:text-slate-900 transition-colors">Signature Generator</button></li>
-                        <li><button onClick={() => handleNavigate('blog')} className="text-sm text-slate-500 hover:text-slate-900 transition-colors">Blog & Guides</button></li>
-                        <li><button onClick={() => setActiveTab('draw')} className="text-sm text-slate-500 hover:text-slate-900 transition-colors">Drawing Pad</button></li>
+                        <li><button onClick={() => handleNavigate('home')} className="text-sm text-slate-500 hover:text-slate-900 transition-colors">{t('nav_home')}</button></li>
+                        <li><button onClick={() => handleNavigate('blog')} className="text-sm text-slate-500 hover:text-slate-900 transition-colors">{t('nav_blog')}</button></li>
+                        <li><button onClick={() => setActiveTab('draw')} className="text-sm text-slate-500 hover:text-slate-900 transition-colors">{t('tab_draw')}</button></li>
                     </ul>
                 </div>
 
                 {/* Company Links */}
                 <div>
-                    <h4 className="font-serif-display font-medium text-slate-900 mb-6">Company</h4>
+                    <h4 className="font-serif-display font-medium text-slate-900 mb-6">{t('footer_company')}</h4>
                     <ul className="space-y-3">
-                        <li><button onClick={() => handleNavigate('about')} className="text-sm text-slate-500 hover:text-slate-900 transition-colors">About Us</button></li>
-                        <li><button onClick={() => handleNavigate('contact')} className="text-sm text-slate-500 hover:text-slate-900 transition-colors">Contact Support</button></li>
+                        <li><button onClick={() => handleNavigate('about')} className="text-sm text-slate-500 hover:text-slate-900 transition-colors">{t('nav_about')}</button></li>
+                        <li><button onClick={() => handleNavigate('contact')} className="text-sm text-slate-500 hover:text-slate-900 transition-colors">{t('nav_contact')}</button></li>
                     </ul>
                 </div>
 
                 {/* Legal Links */}
                 <div>
-                    <h4 className="font-serif-display font-medium text-slate-900 mb-6">Legal</h4>
+                    <h4 className="font-serif-display font-medium text-slate-900 mb-6">{t('footer_legal')}</h4>
                     <ul className="space-y-3">
-                        <li><button onClick={() => handleNavigate('privacy')} className="text-sm text-slate-500 hover:text-slate-900 transition-colors">Privacy Policy</button></li>
-                        <li><button onClick={() => handleNavigate('terms')} className="text-sm text-slate-500 hover:text-slate-900 transition-colors">Terms & Conditions</button></li>
+                        <li><button onClick={() => handleNavigate('privacy')} className="text-sm text-slate-500 hover:text-slate-900 transition-colors">{t('nav_privacy')}</button></li>
+                        <li><button onClick={() => handleNavigate('terms')} className="text-sm text-slate-500 hover:text-slate-900 transition-colors">{t('nav_terms')}</button></li>
                     </ul>
                 </div>
             </div>
 
             <div className="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
                 <p className="text-xs text-gray-400">
-                    © 2025 handwrittensignaturegenerator.org. All rights reserved.
+                    © 2025 handwrittensignaturegenerator.org. {t('footer_rights')}
                 </p>
                 <div className="flex gap-4">
-                    <span className="text-xs text-gray-300">Privacy First Architecture</span>
+                    <span className="text-xs text-gray-300">{t('footer_privacy_arch')}</span>
                     <span className="text-xs text-gray-300">•</span>
-                    <span className="text-xs text-gray-300">No AI Processing</span>
+                    <span className="text-xs text-gray-300">{t('footer_no_ai')}</span>
                 </div>
             </div>
         </div>
